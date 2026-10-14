@@ -31,7 +31,6 @@ jobs:
         id: gpg
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.PASSPHRASE }}
       - uses: goreleaser/goreleaser-action@v6
         with:
           version: '~> v2'
