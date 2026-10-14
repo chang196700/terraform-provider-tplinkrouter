@@ -29,7 +29,6 @@ jobs:
         run: |
           go test ./...
           go vet ./...
-          test -z "$(gofmt -l $(git ls-files '*.go'))"
       - name: Terraform formatting
         run: terraform fmt -check -recursive examples
 

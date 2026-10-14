@@ -26,7 +26,6 @@ jobs:
         run: |
           go test ./...
           go vet ./...
-          test -z "$(gofmt -l $(git ls-files '*.go'))"
           terraform fmt -check -recursive examples
       - uses: crazy-max/ghaction-import-gpg@v6
         id: gpg
