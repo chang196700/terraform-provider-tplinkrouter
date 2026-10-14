@@ -10,7 +10,7 @@ import (
 	"sort"
 	"strings"
 
-	"terraform-provider-tplink-router/internal/catalog"
+	"github.com/chang196700/terraform-provider-tplinkrouter/internal/catalog"
 )
 
 func main() {
@@ -50,3 +50,4 @@ func specsSorted() ([]catalog.Spec, error) {
 	}
 	return specs, nil
 }
+

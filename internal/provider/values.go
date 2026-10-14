@@ -10,11 +10,11 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/chang196700/terraform-provider-tplinkrouter/internal/catalog"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
-	"terraform-provider-tplink-router/internal/catalog"
 )
 
 func wireString(v any) string {
@@ -385,3 +385,4 @@ func knownString(m map[string]attr.Value, key string) string {
 	}
 	return v.ValueString()
 }
+

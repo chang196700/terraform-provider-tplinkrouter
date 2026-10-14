@@ -8,6 +8,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
+	"github.com/chang196700/terraform-provider-tplinkrouter/internal/catalog"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
@@ -19,7 +20,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"terraform-provider-tplink-router/internal/catalog"
 )
 
 func fieldTypes(fields []catalog.Field, includeSecrets bool) map[string]attr.Type {
@@ -190,3 +190,4 @@ func (v integerValidator) ValidateInt64(_ context.Context, req validator.Int64Re
 		resp.Diagnostics.AddAttributeError(req.Path, "Invalid router configuration", fmt.Sprintf("Must be between %d and %d.", f.Min, f.Max))
 	}
 }
+

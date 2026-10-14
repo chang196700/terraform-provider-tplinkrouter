@@ -4,22 +4,24 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strings"
 	"sync"
 	"time"
 
+	"github.com/chang196700/terraform-provider-tplinkrouter/internal/catalog"
+	"github.com/chang196700/terraform-provider-tplinkrouter/internal/client"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"terraform-provider-tplink-router/internal/catalog"
-	"terraform-provider-tplink-router/internal/client"
 )
 
 type routerProvider struct{ version string }
 
 type providerModel struct {
+	Model    types.String `tfsdk:"model"`
 	Endpoint types.String `tfsdk:"endpoint"`
 	Username types.String `tfsdk:"username"`
 	Password types.String `tfsdk:"password"`
@@ -32,12 +34,14 @@ type providerModel struct {
 }
 
 type connection struct {
-	client          *client.Client
-	autoSave        bool
-	mu              sync.Mutex
-	discovered      bool
-	model, firmware string
-	capabilities    map[string]bool
+	client                    *client.Client
+	autoSave                  bool
+	expectedModel             string
+	expectedHW                string
+	mu                        sync.Mutex
+	discovered                bool
+	model, hardware, firmware string
+	capabilities              map[string]bool
 }
 
 func New(version string) func() provider.Provider {
@@ -49,6 +53,7 @@ func (p *routerProvider) Metadata(_ context.Context, _ provider.MetadataRequest,
 }
 func (p *routerProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{Description: "Manage a TP-LINK TL-ER6220T router through its local SLP API.", Attributes: map[string]schema.Attribute{
+		"model":                schema.StringAttribute{Required: true, Description: "Router model identifier. The only supported value is tl-er6220t (TP-LINK TL-ER6220T v1.0)."},
 		"endpoint":             schema.StringAttribute{Optional: true, Description: "Router base URL (HTTP or HTTPS). Defaults to https://192.168.1.1. HTTPS never falls back to HTTP."},
 		"username":             schema.StringAttribute{Optional: true, Description: "Administrator username. Overrides TPLINK_ROUTER_USERNAME and USERNAME in env_file."},
 		"password":             schema.StringAttribute{Optional: true, Sensitive: true, Description: "Administrator password. Overrides TPLINK_ROUTER_PASSWORD and PASSWORD in env_file."},
@@ -67,7 +72,7 @@ func (p *routerProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	for name, v := range map[string]types.String{"endpoint": cfg.Endpoint, "username": cfg.Username, "password": cfg.Password, "env_file": cfg.EnvFile, "timeout": cfg.Timeout} {
+	for name, v := range map[string]types.String{"model": cfg.Model, "endpoint": cfg.Endpoint, "username": cfg.Username, "password": cfg.Password, "env_file": cfg.EnvFile, "timeout": cfg.Timeout} {
 		if v.IsUnknown() {
 			resp.Diagnostics.AddError("Unknown provider configuration", name+" must be known before the provider can connect.")
 		}
@@ -78,6 +83,11 @@ func (p *routerProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		}
 	}
 	if resp.Diagnostics.HasError() {
+		return
+	}
+	model := strings.ToLower(strings.TrimSpace(cfg.Model.ValueString()))
+	if model != "tl-er6220t" {
+		resp.Diagnostics.AddError("Unsupported router model", "model must be tl-er6220t, the identifier for a TP-LINK TL-ER6220T v1.0 router.")
 		return
 	}
 	env := map[string]string{}
@@ -116,7 +126,7 @@ func (p *routerProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		resp.Diagnostics.AddError("Invalid provider configuration", err.Error())
 		return
 	}
-	conn := &connection{client: c, autoSave: cfg.AutoSave.ValueBool()}
+	conn := &connection{client: c, autoSave: cfg.AutoSave.ValueBool(), expectedModel: "TL-ER6220T", expectedHW: "1.0"}
 	resp.ResourceData = conn
 	resp.DataSourceData = conn
 }
@@ -166,9 +176,13 @@ func (c *connection) discover(ctx context.Context) error {
 	d, _ := info["device_info"].(map[string]any)
 	v, _ := d["info"].(map[string]any)
 	c.model = wireString(v["device_model"])
+	c.hardware = wireString(v["hw_version"])
 	c.firmware = wireString(v["sw_version"])
-	if c.model != "TL-ER6220T" {
-		return fmt.Errorf("unsupported device model %q; this provider targets TL-ER6220T", c.model)
+	if !strings.EqualFold(c.model, c.expectedModel) {
+		return fmt.Errorf("unsupported device model %q; provider model tl-er6220t requires TL-ER6220T", c.model)
+	}
+	if c.hardware != c.expectedHW {
+		return fmt.Errorf("unsupported hardware version %q; provider model tl-er6220t requires TL-ER6220T v1.0", c.hardware)
 	}
 	features, err := c.client.Query(ctx, map[string]any{"function": map[string]any{"name": "new_module_spec"}})
 	if err != nil {
@@ -210,3 +224,4 @@ func (c *connection) withOperation(ctx context.Context, operation func() error) 
 		return operation()
 	})
 }
+

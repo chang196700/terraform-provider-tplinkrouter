@@ -1,0 +1,35 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        terraform: ['1.11.4', '1.12.2']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ matrix.terraform }}
+          terraform_wrapper: false
+      - name: Go checks
+        shell: bash
+        run: |
+          go test ./...
+          go vet ./...
+          test -z "$(gofmt -l $(git ls-files '*.go'))"
+      - name: Terraform formatting
+        run: terraform fmt -check -recursive examples
+

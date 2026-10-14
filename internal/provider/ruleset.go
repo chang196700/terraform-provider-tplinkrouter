@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"reflect"
 
+	"github.com/chang196700/terraform-provider-tplinkrouter/internal/catalog"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"terraform-provider-tplink-router/internal/catalog"
 )
 
 func rowOrderNumber(row routerRow, fallback int) int {
@@ -308,3 +308,4 @@ func (r *routerResource) applyRules(ctx context.Context, s catalog.Spec, plan, c
 	}
 	return r.save(ctx, changed)
 }
+

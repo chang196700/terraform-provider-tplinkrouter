@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"terraform-provider-tplink-router/internal/client"
+	"github.com/chang196700/terraform-provider-tplinkrouter/internal/client"
 )
 
 // readDNSGlobal uses the names form used by dns_proxy.htm. A singleton DNS
@@ -115,3 +115,4 @@ func SystemSpecs() []Spec {
 	specs = append(specs, cloud, ha)
 	return specs
 }
+

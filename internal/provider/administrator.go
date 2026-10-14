@@ -7,13 +7,13 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"unicode/utf8"
 
+	"github.com/chang196700/terraform-provider-tplinkrouter/internal/catalog"
+	"github.com/chang196700/terraform-provider-tplinkrouter/internal/client"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"terraform-provider-tplink-router/internal/catalog"
-	"terraform-provider-tplink-router/internal/client"
 )
 
 var adminSpec = catalog.Spec{Name: "administrator", Mode: catalog.Settings, Description: "Manage the currently authenticated administrator. Destroy only releases management. After rotation, update the provider credential source before the next Terraform command; the provider never edits env_file.", Fields: []catalog.Field{
@@ -140,3 +140,4 @@ func (r *administratorResource) change(ctx context.Context, planSource, configSo
 		diags.AddError("Cannot update administrator", err.Error())
 	}
 }
+

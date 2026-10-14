@@ -4,7 +4,7 @@ package catalog
 
 import (
 	"context"
-	"terraform-provider-tplink-router/internal/client"
+	"github.com/chang196700/terraform-provider-tplinkrouter/internal/client"
 )
 
 type Kind string
@@ -125,3 +125,4 @@ func All() []Spec {
 	specs = append(specs, SystemSpecs()...)
 	return specs
 }
+

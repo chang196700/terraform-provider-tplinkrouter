@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/chang196700/terraform-provider-tplinkrouter/internal/client"
 	"strconv"
 	"strings"
-	"terraform-provider-tplink-router/internal/client"
 )
 
 // advancedFields keeps the wire schema explicit while sharing the repetitive
@@ -522,3 +522,4 @@ func AdvancedSpecs() []Spec {
 	}
 	return specs
 }
+

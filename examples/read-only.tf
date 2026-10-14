@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     tplinkrouter = {
-      source = "local/tplinkrouter"
+      source = "chang196700/tplinkrouter"
     }
   }
 }
@@ -25,3 +25,4 @@ output "router_model" {
 output "interface_count" {
   value = data.tplinkrouter_interface.all.row_count
 }
+

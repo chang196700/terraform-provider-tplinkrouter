@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strings"
 
-	"terraform-provider-tplink-router/internal/catalog"
+	"github.com/chang196700/terraform-provider-tplinkrouter/internal/catalog"
 )
 
 type routerRow struct {
@@ -481,3 +481,4 @@ func setSettings(ctx context.Context, c *connection, s catalog.Spec, para map[st
 	_, err := c.client.Mutate(ctx, map[string]any{"method": "set", writer(s): body})
 	return err
 }
+

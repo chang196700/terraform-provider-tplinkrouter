@@ -15,8 +15,8 @@ import (
 	"strings"
 	"time"
 
-	"terraform-provider-tplink-router/internal/catalog"
-	"terraform-provider-tplink-router/internal/client"
+	"github.com/chang196700/terraform-provider-tplinkrouter/internal/catalog"
+	"github.com/chang196700/terraform-provider-tplinkrouter/internal/client"
 )
 
 type auditReport struct {
@@ -426,3 +426,4 @@ func asString(value any) string {
 	}
 	return fmt.Sprint(value)
 }
+

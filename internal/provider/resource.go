@@ -4,13 +4,13 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/chang196700/terraform-provider-tplinkrouter/internal/catalog"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"terraform-provider-tplink-router/internal/catalog"
 )
 
 type routerResource struct {
@@ -371,3 +371,4 @@ func (r *routerResource) Delete(ctx context.Context, req resource.DeleteRequest,
 		resp.Diagnostics.AddError("Cannot delete router configuration", err.Error())
 	}
 }
+

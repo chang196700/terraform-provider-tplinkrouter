@@ -1,4 +1,4 @@
-module terraform-provider-tplink-router
+module github.com/chang196700/terraform-provider-tplinkrouter
 
 go 1.25.0
 
@@ -31,3 +31,4 @@ require (
 	google.golang.org/grpc v1.79.2 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 )
+

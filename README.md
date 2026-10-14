@@ -8,12 +8,13 @@ The provider reads credentials from explicit Terraform arguments first, then `TP
 terraform {
   required_providers {
     tplinkrouter = {
-      source = "local/tplinkrouter"
+      source = "chang196700/tplinkrouter"
     }
   }
 }
 
 provider "tplinkrouter" {
+  model                = "tl-er6220t"
   endpoint             = "https://192.168.1.1"
   env_file             = "${path.root}/.env"
   insecure_skip_verify = true
@@ -26,6 +27,8 @@ data "tplinkrouter_dhcp_server" "lan" {
   interface = "lan"
 }
 ```
+
+`model` is required. The current release supports `tl-er6220t`, which selects and verifies TP-LINK TL-ER6220T hardware version 1.0 before any operation.
 
 Copy `.env.example` to `.env` and keep that file out of version control. The current firmware uses a self-signed certificate and a static RSA TLS 1.2 AES-GCM suite; `insecure_skip_verify` and `allow_legacy_tls` are separate explicit switches. HTTP is also supported by changing `endpoint` to `http://192.168.1.1`.
 
@@ -45,3 +48,4 @@ go run ./cmd/catalog generate
 Use a Terraform CLI development override to load the local binary. Generated reference documentation is under [`docs/`](docs/), including the capability matrix and one page per resource/data source. `go run ./cmd/catalog audit ...` performs a forced read-only audit and writes only sanitized metadata (row counts, field names, errors, and firmware version) to the requested report path.
 
 The catalog deliberately excludes one-shot or cloud-only actions such as firmware upgrade, reboot, restore, AP adoption, cloud template creation, and TP-LINK DDNS domain registration. Local portal pages that already exist on the router are represented as existing read-only identities with typed JSON configuration editing; multi-stage cloud/template/image workflows remain outside Terraform CRUD.
+

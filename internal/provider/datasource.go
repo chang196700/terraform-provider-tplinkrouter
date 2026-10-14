@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"sort"
 
+	"github.com/chang196700/terraform-provider-tplinkrouter/internal/catalog"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"terraform-provider-tplink-router/internal/catalog"
 )
 
 func dataAttributes(fields []catalog.Field) map[string]schema.Attribute {
@@ -178,3 +178,4 @@ func (d *deviceDataSource) Read(ctx context.Context, _ datasource.ReadRequest, r
 		resp.Diagnostics.AddError("Cannot read router information", err.Error())
 	}
 }
+
