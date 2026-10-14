@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+.cache/
+dist/
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+terraform.rc
+*.exe
